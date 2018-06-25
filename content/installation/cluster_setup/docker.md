@@ -1,7 +1,5 @@
 ---
-title: "Cluster Setup"
-weight: 1000
-aliases: ["/operation/installation/cluster_setup/"]
+title: "Cluster Setup with Docker"
 ---
 
 This section describes how to install Humio configured as a distributed system across multiple machines.
@@ -45,7 +43,7 @@ The data is split on 4 mounting points, in the example configurations below on t
 4. `/data/humio-data` holds Humio data.
 
 The following shows how to use the `humio/humio-kafka` image to set up
-Zookeeper and Kafka in a 3 machine cluster.
+ZooKeeper and Kafka in a 3 machine cluster.
 
 For each machine do:
 
