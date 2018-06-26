@@ -182,10 +182,10 @@ First, make sure you have [Ansible installed](https://docs.ansible.com/ansible/l
 Next, create a `requirements.yml` file along with your playbook and inventory, with the following content
 
 ```yaml
-- src: https://github.com/humio/ansible-java
+- src: humio.java
 - src: AnsibleShipyard.ansible-zookeeper
-- src: https://github.com/humio/ansible-kafka
-- src: https://github.com/humio/ansible-humio
+- src: humio.kafka
+- src: humio.server
 ```
 
 Install the roles with
