@@ -16,14 +16,14 @@ You should have Ansible installed and have SSH and sudo access to the machines y
 ## Inventory
 
 We have created a [Github repository](https://github.com/humio/ansible-demo) with scripts to help install and configure Humio.
-The demo repository shows you how to use our [humio.ansible-humio](https://github.com/humio/ansible-humio) role together with [AnsibleShipyard.ansible-zookeeper](https://github.com/AnsibleShipyard/ansible-zookeeper) and [humio.ansible-kafka](https://github.com/humio/ansible-kafka) roles.
+The demo repository shows you how to use our [humio.server](https://galaxy.ansible.com/humio/server/) role together with [AnsibleShipyard.ansible-zookeeper](https://github.com/AnsibleShipyard/ansible-zookeeper) and [humio.kafka](https://galaxy.ansible.com/humio/kafka/) roles.
 We suggest you read through the documentation below and have a look at the repository. Check out the scripts and modify them for your environment.
 
 ## Putting the playbook together
 
 ### ZooKeeper role
 
-We recommend using the [AnsibleShipyard.ansible-zookeeper](https://galaxy.ansible.com/AnsibleShipyard/ansible-zookeeper/) role, since some of it's configuration properties can be reused in the Kafka and Humio plugin. Bare in mind that the role depends on Java. We have successfully tried it out with out own [Java role](https://github.com/humio/ansible-java).
+We recommend using the [AnsibleShipyard.ansible-zookeeper](https://galaxy.ansible.com/AnsibleShipyard/ansible-zookeeper/) role, since some of it's configuration properties can be reused in the Kafka and Humio plugin. Bare in mind that the role depends on Java. We have successfully tried it out with out own [Java role](https://galaxy.ansible.com/humio/java/).
 
 The main purpose of the ZooKeeper role is as follows:
 
@@ -42,7 +42,7 @@ The following playbook entry should get you up and running.
   hosts: zookeepers
   sudo: yes
   roles:
-    - role: humio.ansible-java
+    - role: humio.java
     - role: AnsibleShipyard.ansible-zookeeper
       zookeeper_hosts: "{{groups['zookeepers']}}"
 ```
@@ -53,7 +53,7 @@ We do however strongly recommend using fixed ZooKeeper IDs with a `zookeeper_id`
 - hosts: zookeepers
   sudo: yes
   roles:
-    - role: humio.ansible-java
+    - role: humio.java
     - role: AnsibleShipyard.ansible-zookeeper
       zookeeper_hosts: "
        {%- set ips = [] %}
@@ -82,8 +82,7 @@ For Kafka the same `zookeeper_hosts` var can be reused as used in the [ZooKeeper
 - hosts: kafkas
   sudo: yes
   roles:
-    - role: humio.ansible-java
-    - role: humio.ansible-kafka
+    - role: humio.kafka
       zookeeper_hosts: "
        {%- set ips = [] %}
        {%- for host in groups['zookeepers'] %}
@@ -113,8 +112,7 @@ Again, for the humio role the `zookeeper_hosts` can be reused. Humio just need t
 - hosts: humios
   sudo: yes
   roles:
-    - role: humio.ansible-java
-    - role: humio.ansible-humio
+    - role: humio.server
       zookeeper_hosts: "
        {%- set ips = [] %}
        {%- for host in groups['zookeepers'] %}
