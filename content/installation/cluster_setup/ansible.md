@@ -1,5 +1,8 @@
 ---
 title: "Cluster Setup with Ansible"
+pageImage: /integrations/ansible.svg
+icon: /integrations/ansible-logo.svg
+categories: ["Integration", "Platform"]
 ---
 
 This section describes how to install Humio with our Ansible scripts
