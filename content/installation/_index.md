@@ -19,7 +19,7 @@ running Humio on bare metal please refer to our [Bare Metal Installation Guide](
 Humio was made to scale and scales very well with the number of nodes in the cluster.
 Running a cluster of 3 or more humio nodes provides
 higher capacity in terms of both ingest and search performance and also allows high availability by replicating data to more than one node.
-If you want to run a clustered mode please refer to [cluster setup]({{< ref "cluster_setup.md" >}}).
+If you want to run a clustered mode please refer to [cluster setup]({{< ref "cluster_setup/_index.md" >}}).
 
 
 ## Guides
