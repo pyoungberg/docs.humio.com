@@ -5,6 +5,10 @@ icon: /integrations/ansible-logo.svg
 categories: ["Integration", "Platform"]
 ---
 
+{{% notice info %}}
+This guide is still a work in progress. Things are still changing at a rapid pace.
+{{% /notice %}}
+
 This section describes how to install Humio with our Ansible scripts
 
 For guidance on setting up a Humio cluster we have created a reference [Ansible Playbook](https://github.com/humio/ansible-demo).
@@ -111,6 +115,7 @@ Again, for the humio role the `zookeeper_hosts` can be reused. Humio just need t
 ```yaml
 - hosts: humios
   sudo: yes
+  serial: 1
   roles:
     - role: humio.server
       zookeeper_hosts: "
@@ -199,15 +204,20 @@ This final step can be repeated multiple times
 Assuming you have saved the playbook as `cluster.yml`, run the following command to install Humio
 
 ```bash
-ansible-playbook --inventory-file=inventory.yml cluster.yml
+$ ansible-playbook --inventory-file=inventory.yml cluster.yml
 ```
 
 This should install Java, ZooKeeper, Kafka, and Humio on your machines. Humio will be exposed on port 8080 on your machines.
 
+<!--TODO
+## Notes for provisioning AWS EC2 instances
 
+Add https://raw.github.com/ansible/ansible/devel/contrib/inventory/ec2.py as inventory.
 
+Prefix all groups with `security_group_` i.e. `security_group_humios`.
 
-
+Use `ec2_tag_zookeeper_id` host tag and give your instances a `zookeeper_id` label
+-->
 
 
 <!-- TODO: Consider incorporating the following
