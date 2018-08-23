@@ -29,7 +29,7 @@ We suggest you read through the documentation below and have a look at repositor
 You should also look at the [reference Ansible project](https://github.com/humio/ansible-humio)
 for an example of this in practice.
 
-### Running the Kafka Docker image from humio/humio-kafka
+### Running the Kafka Docker image from humio/kafka
 
 The suggested default is to run 3 instances of the Docker image each containing a Kafka and Zookeeper instance.
 The Zookeeper and Kafka instances must run on ports, that the Humio instances can connect to.
@@ -44,7 +44,7 @@ The data is split on 4 mounting points, in the example configurations below on t
 3. `/data/kafka-data` holds Kafka data.
 4. `/data/humio-data` holds Humio data.
 
-The following shows how to use the `humio/humio-kafka` image to set up
+The following shows how to use the `humio/kafka` image to set up
 Zookeeper and Kafka in a 3 machine cluster.
 
 For each machine do:
@@ -128,10 +128,10 @@ EOF
 ```
 
 
-1. [Install Docker](https://docs.docker.com/engine/installation/) and pull the latest `humio/humio-kafka` Docker image
+1. [Install Docker](https://docs.docker.com/engine/installation/) and pull the latest `humio/kafka` Docker image
 
 ```shell
-docker pull humio/humio-kafka
+docker pull humio/kafka
 ```
 
 1. Start the Docker images on each host, mounting the configuration files and data locations created in previous steps
@@ -143,7 +143,7 @@ docker run -d  --restart always --net=host \
   -v /data/logs:/data/logs \
   -v /data/zookeeper-data:/data/zookeeper-data  \
   -v /data/kafka-data:/data/kafka-data  \
-  --name humio-kafka "humio/humio-kafka"
+  --name humio-kafka "humio/kafka"
 ```
 
 Verify that Zookeeper and Kafka is happy
