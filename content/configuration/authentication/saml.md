@@ -27,6 +27,13 @@ The `$IDP_ENTITY_ID` identifies your IDP and is used internally in the authentic
 
 The provided certificate must be in PEM format (see. https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail). If you are running Humio in docker make sure the file is accessible from the container by e.g. putting it in a readonly directory as described in [docker installation]({{< ref "docker.md" >}}).
 
+{{% notice info %}}
+The redirect back to Humio is handled by the SAML Assertion Consumer Service endpoint located at `http://$HOST:$PORT/api/v1/saml/acs`.
+ {{% /notice %}}
+ {{% notice info %}}
+ Metadata about Humio as a SAML service provider is available at `http://$HOST:$PORT/api/v1/saml/metadata`.
+{{% /notice %}}
+
 Read more about [Configuring Humio]({{< relref "configuration/_index.md" >}})
 
 ## Access Token Lifecycle
@@ -42,4 +49,6 @@ If Humio encounters a new user that has been granted access through the IDP it w
 ```
 
 By default, the user has no rights.  So unless a user is otherwise granted access rights, he or she will not be able to do anything besides see an empty list of repos.  At present, this means that the user needs to be added explicitly as a member or admin to a repo/view to be able to access it.  A future release will support using SAML roles to control access.
+
+
 
