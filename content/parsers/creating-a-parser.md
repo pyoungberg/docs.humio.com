@@ -5,19 +5,19 @@ aliases: ["ref/creating-a-parser", "parsers/json-parsers", "parsers/regexp-parse
 ---
 
 A parser is a piece of code that transforms incoming data into [events]({{< ref "events.md" >}}).
-Humio has built-in parsers for common log format like `accesslog`, but if none of them fit your
-data format or want to extract more fields, do transformation on the data or assign datasources,
+Humio has built-in parsers for common log format like `accesslog`, but if you need more control,
+e.g. you want to extract more fields, do transformation on the data or assign [datasources]({{< ref "tagging.md">}}),
 you can build your own parser.
 
 In this guide we will go through the steps of creating a parser from scratch.
-
-{{< figure src="/pages/parsers/code-view.png" width="100%" caption="Humio's parser editor showing a simple parser and two test cases." >}}
 
 ## Step 1. Creating a new parser
 
 Go the the `Parsers` section of the repository you want to create the parser for.
 Then click the `New Parser` button and give it a name. _The name of a parser is
 important since it is what the API uses to uniquely identify the target parser._
+
+{{< figure src="/pages/parsers/parser-list.png" width="90%" >}}
 
 
 ## Step 2. Writing a parser script
@@ -29,8 +29,8 @@ use to write queries on the search page. The main difference between writing a
 parser and writing a search query is that you cannot use aggregate functions
 like e.g. {{< function "groupBy" >}} as the parser acts on one event at a time.
 
-The input data is usually log lines or JSON objects, but could be any text format
-like a stack trace or CSV.
+The input data is usually single log lines or JSON objects, but could be any text format
+like a multiline stack trace or CSV.
 
 No matter what you send to Humio, the text value will be put in the
 field called `@rawstring` which is the input to the parser.
@@ -50,12 +50,15 @@ That means the parser should:
 1. Assign the special `@timestamp` and `@timezone` fields.
 1. Extract additional fields that should be stored along with your event.
 
-Let us take a look at a couple of parsers and try to understand how they work.
+_The input already includes the `@rawstring` field, so there is no need to assign
+that, though it is strictly possible to assign it to something other than the input._
+
+Let's take a look at a couple of parsers and try to understand how they work.
 
 
 #### Example: Parsing Log Lines {#log-lines}
 
-Lets assume that we have a system producing los like the following two lines:
+Lets assume that we have a system producing log like the following two example lines:
 
 ```
 2018-10-15T12:51:40+00:00 [INFO] This is an example log entry. id=123 fruit=banana
@@ -63,7 +66,7 @@ Lets assume that we have a system producing los like the following two lines:
 ```
 
 We want the parser to produce two events (one per line) and use the timestamp of each line as
-the time at which the event occurred - i.e. assign it to the field `@timestamp` and `@timezone`.
+the time at which the event occurred - i.e. assign it to the special `@timestamp` and `@timezone` fields.
 
 To do this we could write a parser script like:
 
@@ -74,16 +77,19 @@ To do this we could write a parser script like:
 // a field with that name - in this case a field named "ts".
 /^(?<ts>\S+)/ |
 
-// Humio expects the timestamp to be in the Unix Time format, so next we take
-// the text value we just extracted to "ts" and convert it using the parseTimestamp function.
+// Humio expects the timestamp to be in the Millisecond Unix Time format, so next we take
+// the text value we just extracted to "ts" and convert it to a number using the parseTimestamp function.
 parseTimestamp("yyyy-MM-dd'T'HH:mm:ss[.SSS]XXX", field=ts)
 ```
 
-This parser just assigns the `@timestamp` and `@timezone` fields, which is the minimum you we can
-do to create events from the examples above. At this point we have a fully valid parser.
+Just like when querying in Humio regex literals will be applied to the `@rawstring`
+field by default.
 
-But the two log lines actually contains more useful information, like the `INFO` and `ERROR` log levels.
-We can extract those using a regular expression:
+This parser just assigns the `@timestamp` and `@timezone` fields, which is the minimum you we can
+do to create events from the example input above. **At this point we have a fully valid parser.** 🎉
+
+But the two log lines actually contains more useful information, like the `INFO` and `ERROR` log severity levels.
+We can extract those using another regular expression:
 
 ```humio
 /^(?<ts>\S+)/ |
@@ -100,7 +106,7 @@ pair in the log line, e.g. `id=123` `fruit=banana`.
 #### Example: Parsing JSON {#json}
 
 We've seen how to create a parser for unstructured log lines. Now lets try to
-parser for JSON input. Lets use the following example input to our parser:
+write aparser for JSON input. Lets use the following example input to our parser:
 
 ```json
 {
@@ -119,8 +125,8 @@ parser for JSON input. Lets use the following example input to our parser:
 Each object is a separate event and will be parsed separately, just like with
 unstructured logs.
 
-The JSON is accessible as a string in the field `@rawstring`. We can extract fields
-from the JSON by using the {{< function "parseJson" >}} function.
+The JSON is accessible as a string in the field `@rawstring`. We can extract event fields
+from each JSON property by using the {{< function "parseJson" >}} function.
 It takes a field containing a JSON string (in this case the field `@rawstring`)
 and extracts fields automatically, like e.g:
 

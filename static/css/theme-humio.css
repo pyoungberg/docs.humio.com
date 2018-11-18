@@ -181,3 +181,8 @@ h3 {
   margin-right: 8px !important;
   width: 32px;
 }
+
+a code {
+  color: rgb(40, 106, 255) !important;
+  text-decoration: underline !important;
+}

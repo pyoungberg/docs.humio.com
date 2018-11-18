@@ -665,6 +665,7 @@ code, kbd, pre, samp {
     font-size: 92%;
 }
 
+
 code {
     border-radius: 2px;
     white-space: nowrap;
@@ -673,6 +674,7 @@ code {
     border: 1px solid #e9e9eb;
     padding: 1px 3px;
 }
+
 
 code.language-humio {
   background: white;
