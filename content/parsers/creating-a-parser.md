@@ -24,6 +24,8 @@ important since it is what the API uses to uniquely identify the target parser._
 
 Once you have created your parser you will be presented with a code editor.
 
+{{< figure src="/pages/parsers/code-view.png" width="90%" >}}
+
 The programming language used for creating a parser is exactly the same as you
 use to write queries on the search page. The main difference between writing a
 parser and writing a search query is that you cannot use aggregate functions
