@@ -23,6 +23,9 @@ data/functions.json:
 
 deps: data/releases.yml data/functions.json
 
+build: deps
+	hugo
+
 public: deps
 	hugo
 	docker build --tag="humio/docs:latest" .
