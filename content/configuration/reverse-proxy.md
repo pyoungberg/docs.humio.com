@@ -61,7 +61,7 @@ parts here will likely be the same regardless of proxy, except perhaps
 the command that need executing to get the proxy to reload the
 certificate files
 
-#### Making nginx use the certificate
+##### Making nginx use the certificate
 
 The following snippet sets up nginx to use the certificate issued and
 renewed above and tells nginx to use port 443 for TLS connections, and
@@ -114,7 +114,7 @@ Reload nginx
 sudo systemctl reload nginx
 ```
 
-#### Getting the initial certificate
+##### Getting the initial certificate
 
 Issue the certificate using letsencrypt. The letsencrypt servers must
 be able to lookup the name in DNS and get in touch with the server
@@ -127,7 +127,7 @@ certificates)
 sudo letsencrypt certonly -a webroot --webroot-path=/var/www/html -m "${YOUR_EMAIL}" --agree-tos --domains "${FQDN}"
 ```
 
-#### Auto-renewal through letsencrypt
+##### Auto-renewal through letsencrypt
 The following snippet sets up a crontab entry that checks if the certificate needs renewal and renews it if needed. If the certificate is renewed then nginx gets reloaded to use the new certificate.
 
 ```shell
@@ -137,6 +137,44 @@ letsencrypt renew -a webroot --webroot-path=/var/www/html -m "${YOUR_EMAIL}" && 
 EOF
 chmod 755 /etc/cron.weekly/humio-letsencrypt
 ```
+
+#### Adding TLS to nginx with a public cert
+
+Added in the `http {` tag right above the closing `}`
+```
+        ##
+        #Humio Snipets
+        ##
+        ssl_certificate /<PATH_TO_YOUR_CERT>/<CERT>.crt;
+        ssl_certificate_key /<PATH_TO_YOUR_KEY>/<KEY>.pem;
+
+        ssl_protocols TLSv1.2;
+
+        server {
+          ssl on;
+          listen [::]:443;
+          listen 443;
+          server_name <PROTOCOL>://<YOUR_SERVERS_URL>;
+
+          location / {
+           proxy_set_header        X-Forwarded-Proto $scheme;
+           proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header        X-Real-IP $remote_addr;
+           proxy_set_header        Host $host;
+          
+           proxy_pass          http://localhost:8080;
+           proxy_read_timeout  10;
+           proxy_redirect http:// https://;
+           expires off;
+           proxy_http_version 1.1;
+          }
+         }
+        ##
+        #End Humio
+        ##
+
+```
+
 
 #### nginx inside a docker container
 
